@@ -1,18 +1,26 @@
 # DeFi Liquidity Pool Pipeline
 **FinTech 590 — Data Warehousing Project**
 
-Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, verifies each contract on Etherscan, and exports the results to CSV and JSON.
+Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, verifies each contract on Sourcify, and exports the results to CSV and JSON.
 
 ---
 
-## Files
+## Repo Structure
 
-| File | Description |
-|------|-------------|
-| `defi_pipeline.ipynb` | Main pipeline notebook — run this |
-| `Untitled.ipynb` | Scratch file, ignore |
-| `top_pools.csv` | Output: pool data with TVL, volume, verification status |
-| `pool_abis/` | Output: one ABI JSON file per verified pool contract |
+```
+DeFi-Liquidity-Pool/
+├── defi_pipeline.ipynb      # Main pipeline — run this
+├── README.md
+├── .gitignore
+│
+├── data/
+│   ├── top_pools.csv        # Output: pool data with TVL, volume, verification status
+│   └── pool_abis/           # Output: one ABI JSON file per verified pool
+│
+└── docs/
+    ├── NEXT_STEPS.md        # Project roadmap
+    └── prompt.md            # Original prompt and build context
+```
 
 ---
 
@@ -21,10 +29,10 @@ Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, ve
 The pipeline runs in 4 sequential notebook cells:
 
 ### Cell 0 — Install Dependencies
-Auto-installs `requests`, `pandas`, and `python-dotenv` if not already present. Safe to re-run.
+Auto-installs `requests`, `pandas`, `python-dotenv`, and `web3` if not already present. Safe to re-run.
 
-### Cell 1 — Config & API Key
-Reads your Etherscan API key from a `.env` file. If the file doesn't exist, it prompts you to paste the key and saves it automatically. Also sets up output paths.
+### Cell 1 — Config
+Sets up output paths and API constants. No API key required — all data sources are free.
 
 ### Cell 2 — Fetch Top Uniswap V3 Pools
 Pulls pool data from the [DeFiLlama Yields API](https://yields.llama.fi/docs) (free, no key needed), filters to:
@@ -32,16 +40,19 @@ Pulls pool data from the [DeFiLlama Yields API](https://yields.llama.fi/docs) (f
 - Chain: Ethereum
 - TVL > $1,000,000
 
-Sorts by TVL descending and keeps the top 20. Collects: pool address, token pair, fee tier, TVL (USD), and daily volume (USD).
+Sorts by TVL descending and keeps the top 20. Since DeFiLlama returns internal UUIDs instead of on-chain addresses, real pool addresses are computed using Uniswap V3's deterministic **CREATE2** formula from each pool's token addresses and fee tier.
 
 > **Why DeFiLlama and not The Graph?**
-> The Graph shut down their free hosted service in 2024. The original Uniswap V3 subgraph at `api.thegraph.com` no longer works. DeFiLlama provides equivalent data for free with no API key.
+> The Graph shut down their free hosted service in 2024. DeFiLlama provides equivalent data for free with no API key.
 
-### Cell 3 — Verify Contracts on Etherscan
-For each pool address, calls the [Etherscan API](https://docs.etherscan.io/) to check if the contract source is verified. If verified, downloads and saves the full ABI to `pool_abis/{address}.json`. Respects the free tier rate limit (5 req/s) with a 0.21s delay between calls and automatic retry on rate-limit errors.
+### Cell 3 — Verify Contracts on Sourcify
+For each pool address, checks [Sourcify](https://sourcify.dev) — a free open-source contract verification service — for verification status and downloads the full ABI to `data/pool_abis/{address}.json`.
+
+> **Why Sourcify and not Etherscan?**
+> Etherscan V1 was shut down in 2024 and V2 rejects free-tier keys. Sourcify requires no API key and has all Uniswap V3 pool contracts verified.
 
 ### Cell 4 — Save Results
-Writes `top_pools.csv` with columns:
+Writes `data/top_pools.csv` with columns:
 
 | Column | Description |
 |--------|-------------|
@@ -51,7 +62,7 @@ Writes `top_pools.csv` with columns:
 | `fee_tier` | Fee in pips (e.g. 500 = 0.05%) |
 | `tvl_usd` | Total value locked in USD |
 | `volume_usd` | 24h trading volume in USD |
-| `etherscan_verified` | Whether the contract source is verified |
+| `etherscan_verified` | Whether the contract source is verified on Sourcify |
 
 ---
 
@@ -63,20 +74,13 @@ git clone https://github.com/yzhou1031/DeFi-Liquidity-Pool.git
 cd DeFi-Liquidity-Pool
 ```
 
-**2. Create a `.env` file** with your Etherscan API key:
-```
-ETHERSCAN_API_KEY=your_key_here
-```
-Get a free key at [etherscan.io/apis](https://etherscan.io/apis). The `.env` file is gitignored and will never be committed.
+**2. Open and run `defi_pipeline.ipynb`** in Jupyter or VS Code, top to bottom.
 
-**3. Open and run `defi_pipeline.ipynb`** in Jupyter or VS Code, top to bottom.
-
-No manual `pip install` needed — Cell 0 handles it.
+No API keys or manual `pip install` needed — Cell 0 handles dependencies automatically.
 
 ---
 
 ## Requirements
 
 - Python 3.10+
-- `requests`, `pandas`, `python-dotenv` (auto-installed by Cell 0)
-- Free Etherscan API key
+- `requests`, `pandas`, `python-dotenv`, `web3` (auto-installed by Cell 0)
