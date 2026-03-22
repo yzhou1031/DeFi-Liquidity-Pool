@@ -21,13 +21,15 @@ Right now results only live in a CSV. Moving to a database enables historical tr
 
 ---
 
-## 3. Schedule the Pipeline to Run Automatically
-A one-time snapshot has limited value for a data warehouse. Repeated runs build a time series.
+## ~~3. Schedule the Pipeline to Run Automatically~~ ❌ Replaced by Step 2b
 
-**What to do:**
-- Use Windows Task Scheduler (or a cron job) to run the notebook daily
-- Alternatively use `schedule` or `APScheduler` in Python to automate execution
-- Append new rows to the database on each run instead of overwriting the CSV
+> **Revised:** Running the pipeline daily to collect data going forward would take weeks to build up meaningful history. Instead, we use DeFiLlama's historical chart API which provides daily data going back to **March 2022** (~1,400 data points per pool) — available immediately.
+
+## 2b. Fetch Historical Pool Data ✅ Done
+Historical TVL, APY, and impermanent loss for all 20 pools is now fetched in `historical_data.ipynb` using the DeFiLlama Chart API (`yields.llama.fi/chart/{pool_id}`).
+
+**Output:** `data/pool_history.csv` — one row per pool per day, with fields:
+- `date`, `tvl_usd`, `apy`, `apy_base`, `apy_base_7d`, `il_7d`
 
 ---
 
