@@ -10,14 +10,15 @@ Result: 19 of 20 pools verified, ABIs saved to `pool_abis/`.
 
 ---
 
-## 2. Store Data in a Database
-Right now results only live in a CSV. Moving to a database enables historical tracking, queries, and joins.
+## ~~2. Store Data in a Database~~ ✅ Done
 
-**What to do:**
-- Set up a local SQLite database (no server needed) or PostgreSQL
-- Create a `pools` table and an `abi_registry` table
-- Insert each pipeline run with a `fetched_at` timestamp so you can track how TVL and volume change over time
-- Use `pandas.to_sql()` to load the DataFrame directly into the DB
+SQLite database built in `database.ipynb`. No server required — single file at `data/defi_pools.db`.
+
+**Tables:**
+- `pools` — 20 rows, one per pool, with `fetched_at` timestamp
+- `pool_history` — 19,924 rows, one per pool per day (2022-03-27 → present)
+
+Re-running is safe: `pools` uses `INSERT OR REPLACE`, `pool_history` uses `INSERT OR IGNORE` to prevent duplicates. Includes 3 example SQL queries (avg TVL, APY last 90 days, monthly trends).
 
 ---
 
