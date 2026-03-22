@@ -1,12 +1,12 @@
 # Next Steps
 
-## 1. Fix Etherscan Contract Verification
-The current pipeline shows all pools as unverified. This is because DeFiLlama returns internal pool IDs (UUID format) rather than checksummed Ethereum addresses (`0x...`). The fix is to map DeFiLlama pool entries back to their on-chain addresses before hitting Etherscan.
+## ~~1. Fix Contract Verification~~ ✅ Done
 
-**What to do:**
-- Cross-reference DeFiLlama results with the Uniswap V3 subgraph on The Graph's decentralized network (requires a free API key from [thegraph.com](https://thegraph.com/studio/)) to get proper `0x` addresses
-- Or call the DeFiLlama protocol API (`/protocol/uniswap-v3`) which returns on-chain addresses directly
-- Re-run the Etherscan verification step with corrected addresses
+Two issues were resolved:
+- **Address mismatch:** DeFiLlama returns internal UUIDs, not `0x` addresses. Fixed by computing real pool addresses from token addresses + fee tier using Uniswap V3's deterministic CREATE2 formula.
+- **Etherscan deprecated:** Both V1 and V2 Etherscan API endpoints are broken for free-tier keys. Switched to [Sourcify](https://sourcify.dev), a free open-source alternative with no API key required.
+
+Result: 19 of 20 pools verified, ABIs saved to `pool_abis/`.
 
 ---
 
