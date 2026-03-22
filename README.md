@@ -1,5 +1,5 @@
 # DeFi Liquidity Pool Pipeline
-**FinTech 590 — Data Warehousing Project**
+**FinTech 590 — Data Wrangling Project**
 
 Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, verifies each contract on Sourcify, and exports the results to CSV and JSON.
 
