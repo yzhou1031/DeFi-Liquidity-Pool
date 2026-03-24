@@ -4,24 +4,27 @@ Tracked improvements for the DeFi Liquidity Pool pipeline.
 
 ---
 
-## Issue #1 — Extend Historical Data Back to 2021
+## Issue #1 — Extend Historical Data Back to May 2021 via Dune Analytics
 
 **Status:** Open
 **Priority:** High
 
 **Problem:**
-`pool_history` currently starts at **March 2022** (~1,400 data points per pool). DeFiLlama's chart API (`yields.llama.fi/chart/{pool_id}`) may return data going back to **2021** for pools that existed then, but the pipeline never checks how far back the data actually goes.
+`pool_history` currently starts at **March 2022** — the hard limit of DeFiLlama's yields API. Uniswap V3 launched **May 5, 2021**, so ~10 months of data are missing for the core pools. DeFiLlama does not have yield/TVL data before March 2022 and cannot be used to close this gap.
+
+**Why Dune Analytics:**
+Dune has pre-processed Uniswap V3 event tables (Swap, Mint, Burn) on Ethereum going back to the V3 launch block. Free tier includes 2,500 credits/month — sufficient for a one-time historical backfill. No complex on-chain RPC pagination required.
 
 **What to do:**
-- Re-run `historical_data.ipynb` and inspect the earliest `date` returned per pool
-- Check which pools have pre-2022 history (most major WETH/USDC/USDT pools launched mid-2021)
-- Remove any artificial date floor in the fetch logic if one exists
-- On re-ingest, use `INSERT OR IGNORE` so existing rows are not duplicated
-- Update the `pool_history` table / CSV to include the newly fetched rows
-- Validate: `SELECT MIN(date) FROM pool_history` should return a 2021 date for at least the major pools
+- Sign up for a free Dune Analytics account and generate an API key
+- Query the `uniswap_v3_ethereum.Pool_evt_Swap` (and Mint/Burn) tables for each pool address, filtered to `2021-05-01` through `2022-03-26` (the gap period)
+- Aggregate to daily TVL and volume to match the existing `pool_history` schema
+- Merge the Dune results with the existing DeFiLlama data — use date + address as the deduplication key
+- Note: only pools that existed in May 2021 will have data (WBTC/WETH, USDC/WETH, UNI/WETH, LINK/WETH, etc.) — newer pools like AUSD/USDC or OHM/SUSDS won't be affected
+- Validate: `SELECT MIN(date) FROM pool_history` should return a May 2021 date for the legacy pools
 
 **Expected outcome:**
-~800–900 additional daily rows per pool (roughly May 2021 → March 2022), giving ~2,200+ data points per pool and enabling longer-horizon trend analysis.
+~300 additional daily rows per eligible pool (May 2021 → March 2022), extending the panel from ~4 years to ~5 years for the core pools.
 
 ---
 
