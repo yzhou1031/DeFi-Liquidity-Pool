@@ -46,11 +46,11 @@ Sorts by TVL descending and keeps the top 20. Since DeFiLlama returns internal U
 > **Why DeFiLlama and not The Graph?**
 > The Graph shut down their free hosted service in 2024. DeFiLlama provides equivalent data for free with no API key.
 
-### Cell 3 — Verify Contracts on Sourcify
-For each pool address, checks [Sourcify](https://sourcify.dev) — a free open-source contract verification service — for verification status and downloads the full ABI to `data/pool_abis/{address}.json`.
+### Cell 3 — Verify Contracts on Sourcify + Blockscout
+For each pool address, checks [Sourcify](https://sourcify.dev) first — a free decentralized verification service — then falls back to [Blockscout](https://blockscout.com) if not found. Downloads the full ABI to `data/pool_abis/{address}.json`.
 
-> **Why Sourcify and not Etherscan?**
-> Etherscan V1 was shut down in 2024 and V2 rejects free-tier keys. Sourcify requires no API key and has all Uniswap V3 pool contracts verified.
+> **Why not Etherscan?**
+> Etherscan V1 was shut down in 2024 and V2 does not cover Optimism or Base on the free tier. Sourcify and Blockscout cover all 5 chains with no API key required.
 
 ### Cell 4 — Save Results
 Writes `data/top_pools.parquet` (Parquet format, engine: pyarrow) with columns:
