@@ -1,7 +1,7 @@
 # DeFi Liquidity Pool Pipeline
 **FinTech 590 — Data Wrangling Project**
 
-Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, verifies each contract on Sourcify, and exports the results to Parquet and JSON.
+Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL across **Ethereum, Arbitrum, Optimism, Base, and Polygon**, verifies each contract on Sourcify, and exports the results to Parquet and JSON.
 
 ---
 
@@ -38,7 +38,7 @@ Sets up output paths and API constants. No API key required — all data sources
 ### Cell 2 — Fetch Top Uniswap V3 Pools
 Pulls pool data from the [DeFiLlama Yields API](https://yields.llama.fi/docs) (free, no key needed), filters to:
 - Protocol: Uniswap V3
-- Chain: Ethereum
+- Chains: Ethereum, Arbitrum, Optimism, Base, Polygon
 - TVL > $1,000,000
 
 Sorts by TVL descending and keeps the top 20. Since DeFiLlama returns internal UUIDs instead of on-chain addresses, real pool addresses are computed using Uniswap V3's deterministic **CREATE2** formula from each pool's token addresses and fee tier.
