@@ -1,7 +1,7 @@
 # DeFi Liquidity Pool Pipeline
 **FinTech 590 — Data Wrangling Project**
 
-Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, verifies each contract on Sourcify, and exports the results to CSV and JSON.
+Automated pipeline that fetches the top 20 Uniswap V3 liquidity pools by TVL, verifies each contract on Sourcify, and exports the results to Parquet and JSON.
 
 ---
 
@@ -14,7 +14,8 @@ DeFi-Liquidity-Pool/
 ├── .gitignore
 │
 ├── data/
-│   ├── top_pools.csv        # Output: pool data with TVL, volume, verification status
+│   ├── top_pools.parquet    # Output: pool data with TVL, volume, verification status
+│   ├── pool_history.parquet # Output: daily TVL/APY history per pool
 │   └── pool_abis/           # Output: one ABI JSON file per verified pool
 │
 └── docs/
@@ -52,7 +53,7 @@ For each pool address, checks [Sourcify](https://sourcify.dev) — a free open-s
 > Etherscan V1 was shut down in 2024 and V2 rejects free-tier keys. Sourcify requires no API key and has all Uniswap V3 pool contracts verified.
 
 ### Cell 4 — Save Results
-Writes `data/top_pools.csv` with columns:
+Writes `data/top_pools.parquet` (Parquet format, engine: pyarrow) with columns:
 
 | Column | Description |
 |--------|-------------|
@@ -64,6 +65,8 @@ Writes `data/top_pools.csv` with columns:
 | `volume_usd` | 24h trading volume in USD |
 | `etherscan_verified` | Whether the contract source is verified on Sourcify |
 
+`historical_data.ipynb` writes `data/pool_history.parquet` with daily TVL, APY, and impermanent loss per pool. Parquet offers 60–80% smaller file sizes and faster column reads compared to CSV.
+
 ---
 
 ## Setup
@@ -74,7 +77,13 @@ git clone https://github.com/yzhou1031/DeFi-Liquidity-Pool.git
 cd DeFi-Liquidity-Pool
 ```
 
-**2. Open and run `defi_pipeline.ipynb`** in Jupyter or VS Code, top to bottom.
+**2. Run the notebooks in order** in Jupyter or VS Code, top to bottom:
+
+| Step | Notebook | Output |
+|------|----------|--------|
+| 1 | `defi_pipeline.ipynb` | `data/top_pools.parquet` |
+| 2 | `historical_data.ipynb` | `data/pool_history.parquet` |
+| 3 | `database.ipynb` | `data/defi_pools.db` |
 
 No API keys or manual `pip install` needed — Cell 0 handles dependencies automatically.
 
@@ -83,4 +92,4 @@ No API keys or manual `pip install` needed — Cell 0 handles dependencies autom
 ## Requirements
 
 - Python 3.10+
-- `requests`, `pandas`, `python-dotenv`, `web3` (auto-installed by Cell 0)
+- `requests`, `pandas`, `python-dotenv`, `web3`, `pyarrow` (auto-installed by Cell 0)
