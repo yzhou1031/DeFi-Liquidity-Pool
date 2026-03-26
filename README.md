@@ -16,6 +16,7 @@ DeFi-Liquidity-Pool/
 ├── data/
 │   ├── top_pools.parquet    # Output: pool data with TVL, volume, verification status
 │   ├── pool_history.parquet # Output: daily TVL/APY history per pool
+│   ├── pool_onchain.parquet # Output: live on-chain state (price, tick, liquidity)
 │   └── pool_abis/           # Output: one ABI JSON file per verified pool
 │
 └── docs/
@@ -81,9 +82,10 @@ cd DeFi-Liquidity-Pool
 
 | Step | Notebook | Output |
 |------|----------|--------|
-| 1 | `defi_pipeline.ipynb` | `data/top_pools.parquet` |
+| 1 | `defi_pipeline.ipynb` | `data/top_pools.parquet`, `pool_abis/` |
 | 2 | `historical_data.ipynb` | `data/pool_history.parquet` |
 | 3 | `database.ipynb` | `data/defi_pools.db` |
+| 4 | `onchain_data.ipynb` | `data/pool_onchain.parquet` |
 
 No API keys or manual `pip install` needed — Cell 0 handles dependencies automatically.
 
