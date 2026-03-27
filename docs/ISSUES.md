@@ -6,7 +6,7 @@ Tracked improvements for the DeFi Liquidity Pool pipeline.
 
 ## Issue #1 — Extend Historical Data Back to May 2021 via Dune Analytics
 
-**Status:** Open
+**Status:** Closed
 **Priority:** High
 
 **Problem:**
