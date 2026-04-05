@@ -94,14 +94,14 @@ Sidebar: filter by chain, search by token name, adjust history window (30 days �
 
 ---
 
-## 8. Document the Data Model
+## ~~8. Document the Data Model~~ ✅ Done
 
-Good data warehouse practice includes schema documentation.
+`docs/data_model.md` — full schema documentation for all three data stores.
 
-**What to do:**
-- Write a data dictionary describing every field (type, source, unit)
-- Draw an ER diagram covering `pools`, `pool_history`, and `pool_onchain`
-- Note data freshness (DeFiLlama updates TVL roughly every hour)
+**Covers:**
+- ER diagram linking `pools` → `pool_history` and `pool_onchain`
+- Data dictionary for every field: type, source, unit/notes
+- Data freshness table (granularity, lag, how to refresh per dataset)
 
 ---
 
