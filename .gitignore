@@ -6,3 +6,4 @@ __pycache__/
 .ipynb_checkpoints/
 *.parquet
 .dashboard_run.py
+.dashboard_run.txt
