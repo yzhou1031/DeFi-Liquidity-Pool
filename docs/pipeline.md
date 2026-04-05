@@ -79,15 +79,18 @@ All charts saved to `data/*.png`.
 
 ---
 
-## 7. Build a Simple Dashboard
+## ~~7. Build a Simple Dashboard~~ ✅ Done
 
-Package the analysis into a shareable, interactive interface.
+`dashboard.py` — run with `streamlit run dashboard.py`.
 
-**Options:**
-- **Streamlit** — quickest to build, runs locally, easy to share
-- **Dash (Plotly)** — more control over layout
-- Display the top pools table, charts, and last-updated timestamp
-- Can be deployed for free on Streamlit Community Cloud
+**5 sections:**
+- **Current Snapshot** — TVL, fee revenue, and capital efficiency (TVL vs. volume scatter) with chain filter
+- **Historical TVL** — total area chart, per-chain log-scale lines, and indexed growth view
+- **APY Analysis** — median APY ranking, APY volatility, and per-pool time series picker
+- **Risk Metrics** — median impermanent loss over time, TVL concentration bar chart
+- **On-Chain Live State** — active liquidity by pool, full on-chain data table
+
+Sidebar: filter by chain, search by token name, adjust history window (30 days → 5 years). All charts are interactive Plotly. Deployable to Streamlit Community Cloud.
 
 ---
 
