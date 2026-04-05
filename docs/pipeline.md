@@ -121,6 +121,23 @@ SQLite (`data/defi_pools.db`) is retained for ad-hoc SQL queries. Parquet delive
 
 ---
 
+### ~~Issue #4 — Pull On-Chain Data Using Pool ABIs~~ ✅ Done
+
+`onchain_data.ipynb` built to query live Uniswap V3 pool state across all 5 chains using the saved ABIs in `pool_abis/`.
+
+**Calls per pool:** `slot0()` (sqrtPriceX96 + current tick), `liquidity()` (active in-range liquidity), `fee()` (fee tier in pips).
+
+**Output:** `data/pool_onchain.parquet` — one row per pool per run.
+
+**Issues resolved in follow-up commit:**
+- Polygon 401 → switched to `rpc.ankr.com/polygon`
+- Base/Ethereum 429 rate limiting → added retry backoff
+- `price_raw` decimal adjustment → token decimals fetched via `decimals()` on each token contract
+
+Sanity check passed: all on-chain fee tiers match DeFiLlama data.
+
+---
+
 ### Issue #3 — Support Additional DeFi Protocols (Optional)
 
 **Status:** Open
