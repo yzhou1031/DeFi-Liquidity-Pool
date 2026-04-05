@@ -20,7 +20,7 @@ DeFi-Liquidity-Pool/
 │   └── pool_abis/           # Output: one ABI JSON file per verified pool
 │
 └── docs/
-    ├── NEXT_STEPS.md        # Project roadmap
+    ├── pipeline.md          # Project roadmap and issue tracker
     └── prompt.md            # Original prompt and build context
 ```
 
