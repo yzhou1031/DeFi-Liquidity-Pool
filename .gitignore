@@ -7,3 +7,5 @@ __pycache__/
 *.parquet
 .dashboard_run.py
 .dashboard_run.txt
+report_hr.md
+report_tech.md
